@@ -205,7 +205,79 @@ static void Q4(string classe)
     db.Utilizzi.Where(c => c.Studente.Classe.Nome == classe)
     .Select(u => new {ModelloPC = u.Computer.Modello})
     .ToList()
-    .ForEach(s => System.Console.WriteLine($"{s.ModelloPC}usato dalla  {classe}"));
-    
-    
+    .ForEach(s => System.Console.WriteLine($"{s.ModelloPC} usato dalla {classe}"));
+}
+
+System.Console.WriteLine("QUERY 5");
+Q5(61);
+static void Q5(int computerId)
+{
+    using UtilizziContext db = new();
+
+    var data = DateTime.Now.AddDays(-30);
+
+	var utilizziGiorni =
+	db.Utilizzi
+	.Where(c => c.DataOraFineUtilizzo >= data)
+	.Select(c => new {
+		ClasseStudente = c.Studente.Classe.Nome ,
+		NomeStudente = c.Studente.Nome ,
+		DataOraUtilizzo = c.DataOraInizioUtilizzo ,
+		DataOraFineUtilizzo = c.DataOraFineUtilizzo})
+		.OrderBy(c => c.DataOraUtilizzo)
+		.ToList();
+		
+		System.Console.WriteLine("Studenti che hanno utilizzato il PC negli ultimi 30 giorni ");
+
+		foreach(var v in utilizziGiorni)
+		{
+			System.Console.WriteLine($"{v.ClasseStudente} {v.NomeStudente} {v.DataOraUtilizzo} {v.DataOraFineUtilizzo}");
+		}
+
+	
+}
+
+System.Console.WriteLine("QUERY 6");
+//Q6(): Stampa per ogni classe quanti utilizzi di computer sono stati fatti negli ultimi 30 giorni.
+
+Q6();
+static void Q6()
+{
+	using UtilizziContext db = new();
+
+	var timeSpan = DateTime.Now.AddDays(-30);
+	var utilizziPerClasse =
+	db.Utilizzi
+	.Where(c => c.DataOraInizioUtilizzo >= timeSpan)
+	.GroupBy(c => c.Studente.Classe.Nome)
+	.Select(c => new {NomiClasse = c.Key , NumeroUtilizzi = c.Count()})
+	.ToList();
+
+	foreach(var v in utilizziPerClasse)
+	{
+	Console.WriteLine($"{v.NomiClasse} {v.NumeroUtilizzi}");
+	}
+
+}
+System.Console.WriteLine("QUERY 7");
+Q7();
+//Q7(): Stampa la classe che ha utilizzato maggiormente i computer (quella con il maggior numero di utilizzi) negli ultimi 30 giorni.
+
+static void Q7()
+{
+	using UtilizziContext db = new();
+
+	var classeConPiuUtilizzi=
+	db.Utilizzi.GroupBy(c => c.Studente.Classe.Nome)
+	.Select(c => new {Classe = c.Key ,NumeroUtilizzi = c.Count()})
+	.OrderByDescending(c => c.NumeroUtilizzi)
+	.FirstOrDefault();
+
+	if(classeConPiuUtilizzi != null)
+	{
+		Console
+		.WriteLine($"La Classe con piu utilizzi è la {classeConPiuUtilizzi.Classe} con {classeConPiuUtilizzi.NumeroUtilizzi}");
+	}
+
+
 }
