@@ -5,7 +5,7 @@ namespace ProvaVerifica3.Model;
 
 //Utilizza(StudenteId*,ComputerId*,DataOraInizioUtilizzo, DataOraFineUtilizzo )
 
- [PrimaryKey(nameof(StudenteId))]
+
 public class Utilizza
 {
     public int StudenteId { get; set; }

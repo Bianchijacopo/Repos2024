@@ -1,22 +1,38 @@
-﻿internal class Program
+﻿namespace SharedResources01
+{
+    class Program
     {
+        private static int sum;
         static void Main(string[] args)
         {
-            //initialize a thread class object 
-            //And pass your custom method name to the constructor parameter
-            Thread t = new Thread(SomeMethod);
-            //start running your thread
-            t.Start();
-            //while thread is running in parallel 
-            //you can carry out other operations here        
-            Console.WriteLine("Press Enter to terminate!");
+            //create thread t1 using anonymous method
+            Thread t1 = new(() => {
+                for (int i = 0; i < 10000000; i++)
+                {
+                    //increment sum value
+                    sum++;
+                    // Interlocked.Increment(ref sum);
+                }
+            });
+            //create thread t2 using anonymous method
+            Thread t2 = new(() => {
+                for (int i = 0; i < 10000000; i++)
+                {
+                    //increment sum value
+                    sum++;
+                }
+            });
+            //start thread t1 and t2
+            t1.Start();
+            t2.Start();
+            //wait for thread t1 and t2 to finish their execution
+            t1.Join();
+            t2.Join();
+            //write final sum on screen
+            Console.WriteLine("sum: " + sum);
+            Console.WriteLine("Press enter to terminate!");
             Console.ReadLine();
         }
-        private static void SomeMethod()
-        {
-            //your code here that you want to run parallel
-            //most of the time it will be a CPU bound operation
-            Console.WriteLine("Hello World!");
-        }
-
     }
+
+}
