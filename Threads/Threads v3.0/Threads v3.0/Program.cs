@@ -1,6 +1,8 @@
 ﻿class Program
 {
     private static int sum;
+
+    private static readonly object lockv1 = new object();
     static void Main(string[] args)
     {
         //create thread t1 using anonymous method
@@ -8,18 +10,25 @@
         {
             for (int i = 0; i < 10000000; i++)
             {
-                //use threading Interlocked class for atomic update
-                Interlocked.Increment(ref sum);
+                //acquire lock ownership
+                Monitor.Enter(lockv1);
+                //increment sum value
+                sum++;
+                //release lock ownership
+                Monitor.Exit(lockv1);
             }
         });
-
         //create thread t2 using anonymous method
         Thread t2 = new Thread(() =>
         {
             for (int i = 0; i < 10000000; i++)
             {
-                //use threading Interlocked class for atomic update
-                Interlocked.Increment(ref sum);
+                //acquire lock ownership
+                Monitor.Enter(lockv1);
+                //increment sum value
+                sum++;
+                //release lock ownership
+                Monitor.Exit(lockv1);
             }
         });
         //start thread t1 and t2
