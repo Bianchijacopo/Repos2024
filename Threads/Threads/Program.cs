@@ -10,8 +10,8 @@
                 for (int i = 0; i < 10000000; i++)
                 {
                     //increment sum value
-                    sum++;
-                    // Interlocked.Increment(ref sum);
+                    //sum++;
+                    Interlocked.Increment(ref sum);
                 }
             });
             //create thread t2 using anonymous method
